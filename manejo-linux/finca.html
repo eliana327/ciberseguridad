@@ -1,0 +1,1236 @@
+<finca.html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Finca — Panel de alquiler</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    --paper:#FFFBF0; --paper-2:#FFE9A8; --ink:#161A12; --ink-soft:#54503C;
+    --forest:#00C853; --forest-2:#00A344; --sage:#00E676; --ochre:#FF9100;
+    --ochre-2:#E67E00; --clay:#FF3D00; --sky:#00B8D4; --line:#FFD24D;
+    --card:#FFFFFF; --danger:#FF1744; --good:#00C853; --violet:#7C4DFF;
+  }
+  :root:not([data-theme="light"]) { }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#161A10; --paper-2:#22280F; --ink:#F5F8EC; --ink-soft:#C4CBA8;
+      --forest:#00E676; --forest-2:#00C853; --sage:#69F0AE; --ochre:#FFB300;
+      --ochre-2:#FFCA28; --clay:#FF6E40; --sky:#18FFFF; --line:#3A4520;
+      --card:#1E250F; --danger:#FF5252; --good:#69F0AE; --violet:#B388FF;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#161A10; --paper-2:#22280F; --ink:#F5F8EC; --ink-soft:#C4CBA8;
+    --forest:#00E676; --forest-2:#00C853; --sage:#69F0AE; --ochre:#FFB300;
+    --ochre-2:#FFCA28; --clay:#FF6E40; --sky:#18FFFF; --line:#3A4520;
+    --card:#1E250F; --danger:#FF5252; --good:#69F0AE; --violet:#B388FF;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{
+    margin:0; min-height:100vh; background:var(--paper); color:var(--ink);
+    font-family:"Work Sans",system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.brand{font-family:"Fraunces",serif;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px;}
+
+  .app{display:flex;min-height:100vh;}
+  .side{
+    width:220px; flex:0 0 220px; background:var(--forest); color:#F3EFDF;
+    padding:22px 14px; display:flex; flex-direction:column; gap:26px;
+  }
+  .brand{font-size:22px; font-weight:600; line-height:1.15; padding:0 8px;}
+  .brand small{display:block; font-family:"Work Sans"; font-size:11.5px; font-weight:500; color:#C9D8CB; letter-spacing:.02em; margin-top:4px;}
+  nav{display:flex; flex-direction:column; gap:4px;}
+  .navbtn{
+    display:flex; align-items:center; gap:10px; text-align:left; background:none; border:none;
+    color:#EAE4CE; padding:11px 12px; border-radius:10px; font-size:15px; cursor:pointer;
+    transition:background .15s ease;
+  }
+  .navbtn .ico{font-size:17px; width:20px; text-align:center;}
+  .navbtn:hover{background:rgba(255,255,255,.08);}
+  .navbtn.active{background:var(--paper); color:var(--forest-2); font-weight:600;}
+  .side-foot{margin-top:auto; font-size:12px; color:#B9CDBB; padding:0 8px; line-height:1.5;}
+
+  main{flex:1; min-width:0; padding:28px 32px 60px; max-width:1180px;}
+  @media (max-width:820px){
+    .app{flex-direction:column;}
+    .side{width:100%; flex:none; flex-direction:row; align-items:center; padding:14px 16px; overflow-x:auto; gap:14px;}
+    .brand{padding:0; white-space:nowrap;}
+    .brand small{display:none;}
+    nav{flex-direction:row;}
+    .side-foot{display:none;}
+    main{padding:20px 16px 48px;}
+  }
+
+  .topline{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap;
+    margin:-28px -32px 26px; padding:26px 32px 20px; border-bottom:1px solid var(--line);
+    background:color-mix(in srgb, var(--accent, var(--forest)) 12%, var(--paper));
+  }
+  @media (max-width:820px){ .topline{margin:-20px -16px 20px; padding:20px 16px 16px;} }
+  .topline .ttl{display:flex; align-items:center; gap:12px;}
+  .topline .ico-big{
+    font-size:26px; width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    background:color-mix(in srgb, var(--accent, var(--forest)) 28%, var(--paper)); flex:0 0 auto;
+  }
+  .topline h1{font-size:26px; margin:0 0 4px; font-weight:600; color:color-mix(in srgb, var(--accent, var(--forest)) 70%, var(--ink));}
+  .topline p{margin:0; color:var(--ink-soft); font-size:14px;}
+  .stats{display:flex; gap:10px; flex-wrap:wrap;}
+  .stat{
+    background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 16px; min-width:118px;
+  }
+  .stat b{display:block; font-size:19px; font-family:"Fraunces",serif;}
+  .stat span{font-size:11.5px; color:var(--ink-soft);}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px;}
+  .card + .card{margin-top:18px;}
+  .card h2{margin:0 0 14px; font-size:19px; font-weight:600;}
+  .card h3{margin:0 0 10px; font-size:15px; font-weight:600;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
+  @media (max-width:640px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  label{display:block; font-size:12.5px; color:var(--ink-soft); margin-bottom:5px; font-weight:500;}
+  input,select,textarea{
+    width:100%; padding:9px 11px; border-radius:9px; border:1px solid var(--line);
+    background:var(--paper-2); color:var(--ink); font-family:inherit; font-size:14px;
+  }
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--sage); outline-offset:1px;}
+  textarea{resize:vertical; min-height:56px;}
+  .field{margin-bottom:12px;}
+  input[type=file]{padding:7px;}
+
+  .btn{
+    display:inline-flex; align-items:center; gap:7px; padding:10px 16px; border-radius:9px; border:none;
+    background:var(--forest); color:#fff; font-size:14px; font-weight:600; cursor:pointer;
+  }
+  .btn:hover{background:var(--forest-2);}
+  .btn.ghost{background:transparent; color:var(--forest); border:1px solid var(--line);}
+  .btn.danger{background:transparent; color:var(--danger); border:1px solid var(--line); padding:7px 11px; font-size:13px;}
+  .btn.small{padding:7px 11px; font-size:13px;}
+  .btnrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;}
+
+  .empty{
+    border:1.5px dashed var(--line); border-radius:14px; padding:34px 20px; text-align:center;
+    color:var(--ink-soft); font-size:14px;
+  }
+
+  /* Reservas */
+  .res-list{display:flex; flex-direction:column; gap:14px; margin-top:18px;}
+  .res-card{border:1px solid var(--line); border-radius:14px; padding:16px; background:var(--paper-2);}
+  .res-head{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:flex-start;}
+  .res-head h3{margin:0; font-size:17px;}
+  .res-dates{font-size:13px; color:var(--ink-soft); margin-top:2px;}
+  .pill{display:inline-block; padding:3px 10px; border-radius:999px; font-size:11.5px; font-weight:600; background:var(--sage); color:#123018;}
+  .pill.upcoming{background:var(--ochre); color:#2b1c05;}
+  .pill.past{background:var(--line); color:var(--ink-soft);}
+  .res-body{margin-top:10px; font-size:13.5px; color:var(--ink-soft);}
+  .res-price{font-family:"Fraunces",serif; font-size:16px; color:var(--ink); margin-top:8px;}
+  .gallery{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+  .thumb{width:76px; height:76px; border-radius:9px; overflow:hidden; position:relative; border:1px solid var(--line); background:#0002;}
+  .thumb img,.thumb video{width:100%; height:100%; object-fit:cover; display:block;}
+  .thumb .vidtag{position:absolute; bottom:2px; right:2px; background:#000a; color:#fff; font-size:9px; padding:1px 4px; border-radius:4px;}
+  .thumb .rm{position:absolute; top:2px; right:2px; background:#0009; color:#fff; border:none; border-radius:5px; width:17px; height:17px; font-size:11px; cursor:pointer; line-height:1;}
+  .addmedia{width:76px; height:76px; border-radius:9px; border:1.5px dashed var(--line); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink-soft); font-size:22px; background:none;}
+  .note{font-size:11.5px; color:var(--ink-soft); margin-top:6px;}
+
+  /* Gastos */
+  table{width:100%; border-collapse:collapse; font-size:13.5px; margin-top:14px;}
+  th,td{text-align:left; padding:9px 8px; border-bottom:1px solid var(--line);}
+  th{color:var(--ink-soft); font-weight:600; font-size:12px;}
+  td.num{text-align:right; font-variant-numeric:tabular-nums;}
+  th.num{text-align:right;}
+  .cat-tag{font-size:11px; padding:2px 8px; border-radius:999px; background:var(--paper-2); border:1px solid var(--line);}
+  .balance-row{display:flex; gap:12px; flex-wrap:wrap; margin-top:16px;}
+  .bal{flex:1; min-width:150px; border-radius:12px; padding:14px 16px; background:var(--paper-2); border:1px solid var(--line);}
+  .bal.ok b{color:var(--good);}
+  .bal.bad b{color:var(--danger);}
+  .bal span{font-size:12px; color:var(--ink-soft);}
+  .bal b{display:block; font-family:"Fraunces",serif; font-size:20px; margin-top:2px;}
+
+  /* Calendario */
+  .seg{display:inline-flex; background:var(--paper-2); border:1px solid var(--line); border-radius:10px; padding:3px; gap:2px;}
+  .seg button{background:none; border:none; padding:7px 14px; border-radius:7px; font-size:13.5px; font-weight:600; color:var(--ink-soft); cursor:pointer;}
+  .seg button.active{background:var(--forest); color:#fff;}
+  .cal-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap;}
+  .navmini{display:flex; align-items:center; gap:10px;}
+  .navmini button{background:var(--paper-2); border:1px solid var(--line); border-radius:8px; width:30px; height:30px; cursor:pointer; font-size:14px;}
+  .navmini strong{font-family:"Fraunces",serif; font-size:17px;}
+
+  .month-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px;}
+  .dow{font-size:11px; text-align:center; color:var(--ink-soft); font-weight:600; padding-bottom:4px;}
+  .day{
+    min-height:78px; border-radius:10px; border:1px solid var(--line); padding:6px; background:var(--paper-2);
+    font-size:12px; cursor:pointer; display:flex; flex-direction:column; gap:3px; position:relative;
+  }
+  .day.other{opacity:.35;}
+  .day.today{border-color:var(--forest); border-width:2px;}
+  .day .dnum{font-weight:600; font-size:13px;}
+  .day.holiday{background:#E9CBA9;}
+  :root[data-theme="dark"] .day.holiday, @media (prefers-color-scheme:dark){ }
+  .day.holiday{background:color-mix(in srgb, var(--ochre) 22%, var(--paper-2));}
+  .day.special{background:color-mix(in srgb, var(--sky) 18%, var(--paper-2));}
+  .day .tag{font-size:9.5px; line-height:1.2; color:var(--ink-soft);}
+  .day .occ{position:absolute; bottom:5px; right:6px; width:8px; height:8px; border-radius:50%; background:var(--clay);}
+  .day.weekend{background:color-mix(in srgb, var(--sage) 16%, var(--paper-2));}
+
+  .week-strip{display:grid; grid-template-columns:repeat(7,1fr); gap:10px;}
+  .wcol{border:1px solid var(--line); border-radius:12px; padding:10px; background:var(--paper-2); min-height:130px;}
+  .wcol.holiday{background:color-mix(in srgb, var(--ochre) 20%, var(--paper-2));}
+  .wcol.today{border-color:var(--forest); border-width:2px;}
+  .wcol .wd{font-size:11px; color:var(--ink-soft); font-weight:600;}
+  .wcol .wn{font-family:"Fraunces",serif; font-size:18px;}
+  .wcol .tag{font-size:10.5px; margin-top:4px; color:var(--ochre-2); font-weight:600;}
+  .wcol .resmini{font-size:11px; margin-top:6px; background:var(--card); border-radius:6px; padding:3px 6px;}
+  @media (max-width:820px){.week-strip{grid-template-columns:repeat(auto-fit,minmax(100px,1fr));}}
+
+  .wknd-list{display:flex; flex-direction:column; gap:10px; margin-top:14px;}
+  .wknd{
+    border:1px solid var(--line); border-radius:13px; padding:14px 16px; display:flex; justify-content:space-between;
+    align-items:center; gap:12px; flex-wrap:wrap; background:var(--paper-2);
+  }
+  .wknd.puente{background:color-mix(in srgb, var(--ochre) 18%, var(--paper-2)); border-color:var(--ochre);}
+  .wknd .wr{font-family:"Fraunces",serif; font-size:16.5px;}
+  .wknd .wsub{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .badge{font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px;}
+  .badge.puente{background:var(--ochre); color:#2b1c05;}
+  .badge.libre{background:var(--sage); color:#123018;}
+  .badge.reservado{background:var(--clay); color:#fff;}
+
+  .daypanel{margin-top:18px;}
+  .legend{display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--ink-soft); margin-top:14px;}
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .dot{width:10px; height:10px; border-radius:3px; display:inline-block;}
+
+  /* Chat */
+  .chat-wrap{display:flex; flex-direction:column; height:520px;}
+  .chat-log{flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:10px; padding:6px 2px;}
+  .msg{max-width:78%; padding:10px 13px; border-radius:14px; font-size:13.5px; line-height:1.45;}
+  .msg.bot{align-self:flex-start; background:var(--paper-2); border:1px solid var(--line); border-bottom-left-radius:4px;}
+  .msg.user{align-self:flex-end; background:var(--violet); color:#fff; border-bottom-right-radius:4px;}
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin:12px 0;}
+  .chip{background:var(--paper-2); border:1px solid var(--line); border-radius:999px; padding:6px 13px; font-size:12.5px; cursor:pointer; color:var(--ink);}
+  .chip:hover{background:color-mix(in srgb, var(--violet) 18%, var(--paper-2));}
+  .chat-inputrow{display:flex; gap:8px; margin-top:10px;}
+  .chat-inputrow input{flex:1;}
+  .avail-inline{display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end; margin-top:6px;}
+  .avail-inline .field{margin:0; width:140px;}
+  .kb-toggle{background:none; border:1px solid var(--line); border-radius:9px; padding:7px 12px; font-size:12.5px; cursor:pointer; color:var(--ink-soft);}
+
+  /* Impresión (factura / contrato) */
+  #print-area{display:none;}
+  @media print{
+    body *{visibility:hidden;}
+    #print-area, #print-area *{visibility:visible;}
+    #print-area{display:block; position:absolute; top:0; left:0; width:100%; padding:24px; color:#000; background:#fff;}
+    .print-doc h1{font-family:"Fraunces",serif; font-size:22px; margin:0 0 4px;}
+    .print-doc h2{font-size:15px; margin:18px 0 6px;}
+    .print-doc .sub{color:#444; font-size:12.5px; margin-bottom:14px;}
+    .print-doc table{width:100%; border-collapse:collapse; margin:10px 0;}
+    .print-doc td{padding:5px 4px; border-bottom:1px solid #ccc; font-size:13px;}
+    .print-doc td.k{color:#555; width:40%;}
+    .print-doc .total{font-size:17px; font-weight:700; margin-top:10px;}
+    .print-doc p{font-size:12.5px; line-height:1.6; text-align:justify;}
+    .print-doc .firmas{display:flex; justify-content:space-between; margin-top:60px;}
+    .print-doc .firma{width:44%; border-top:1px solid #000; text-align:center; padding-top:6px; font-size:12px;}
+    .print-doc .foot{margin-top:24px; font-size:10.5px; color:#666;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="side">
+    <div class="brand">Finca Panel<small>Gestión de alquiler</small></div>
+    <nav id="nav">
+      <button class="navbtn" data-tab="reservas"><span class="ico">🧳</span>Clientes</button>
+      <button class="navbtn" data-tab="gastos"><span class="ico">💰</span>Gastos y costos</button>
+      <button class="navbtn" data-tab="calendario"><span class="ico">📅</span>Calendario</button>
+      <button class="navbtn" data-tab="chat"><span class="ico">💬</span>Chat con clientes</button>
+    </nav>
+    <div class="side-foot">Los datos se guardan solo en este navegador. Exporta o respalda si cambias de equipo.</div>
+  </div>
+
+  <main>
+    <!-- RESERVAS -->
+    <section id="tab-reservas" style="--accent:var(--clay);">
+      <div class="topline">
+        <div class="ttl"><span class="ico-big">🧳</span><div><h1>Reservas</h1><p>Clientes que alquilan la finca — con fotos y videos de cada estadía.</p></div></div>
+        <div class="stats" id="res-stats"></div>
+      </div>
+
+      <div class="card" id="ocupacion-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <h2 style="margin:0;">👥 Personas en la finca ahora</h2>
+          <button class="btn small ghost" id="print-ocupacion-btn">🖨️ Imprimir listado</button>
+        </div>
+        <div id="ocupacion-body"></div>
+      </div>
+
+      <div class="card">
+        <h2 id="res-form-title">Nueva reserva</h2>
+        <form id="res-form">
+          <input type="hidden" id="r-id">
+          <div class="grid2">
+            <div class="field"><label>Cliente</label><input id="r-cliente" required placeholder="Nombre completo"></div>
+            <div class="field"><label>Teléfono / contacto</label><input id="r-contacto" placeholder="300 000 0000"></div>
+          </div>
+          <div class="field"><label>Documento de identidad (opcional, para el contrato)</label><input id="r-documento" placeholder="Ej: CC 1 000 000 000"></div>
+          <div class="grid3">
+            <div class="field"><label>Entrada</label><input type="date" id="r-checkin" required></div>
+            <div class="field"><label>Salida</label><input type="date" id="r-checkout" required></div>
+            <div class="field"><label>Precio total (COP)</label><input type="number" id="r-precio" min="0" step="1000" placeholder="0"></div>
+          </div>
+          <div class="grid3">
+            <div class="field"><label>Niños</label><input type="number" id="r-ninos" min="0" step="1" placeholder="0"></div>
+            <div class="field"><label>Jóvenes</label><input type="number" id="r-jovenes" min="0" step="1" placeholder="0"></div>
+            <div class="field"><label>Adultos</label><input type="number" id="r-adultos" min="0" step="1" placeholder="0"></div>
+          </div>
+          <div class="field"><label>Nombres de los huéspedes (opcional, separados por coma)</label><input id="r-nombres" placeholder="Juan Pérez, María Gómez, ..."></div>
+          <div class="field"><label>Notas</label><textarea id="r-notas" placeholder="Mascotas, pedidos especiales..."></textarea></div>
+          <div class="field">
+            <label>Fotos y videos de la estadía</label>
+            <input type="file" id="r-media" accept="image/*,video/*" multiple>
+            <div class="note">Las fotos se guardan comprimidas. Los videos se guardan solo si pesan poco (&lt;3&nbsp;MB); si son más pesados, se muestran en esta sesión pero no persisten al recargar.</div>
+          </div>
+          <div class="grid2">
+            <div class="field">
+              <label>📥 Fotos de entrega — al recibir la finca</label>
+              <input type="file" id="r-media-checkin" accept="image/*,video/*" multiple>
+            </div>
+            <div class="field">
+              <label>📤 Fotos de entrega — al salir de la finca</label>
+              <input type="file" id="r-media-checkout" accept="image/*,video/*" multiple>
+            </div>
+          </div>
+          <div class="note" style="margin-top:-6px; margin-bottom:12px;">Estas fotos sirven como respaldo del estado de la finca antes y después de la estadía, para revisar la entrega.</div>
+          <div class="btnrow">
+            <button type="submit" class="btn">Guardar reserva</button>
+            <button type="button" class="btn ghost" id="res-cancel" style="display:none;">Cancelar edición</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="res-list" class="res-list"></div>
+    </section>
+
+    <!-- GASTOS -->
+    <section id="tab-gastos" style="display:none; --accent:var(--ochre);">
+      <div class="topline">
+        <div class="ttl"><span class="ico-big">💰</span><div><h1>Gastos y costos</h1><p>Área administrativa: registra costos y compara contra los ingresos de reservas.</p></div></div>
+      </div>
+
+      <div class="card" id="gastos-lock">
+        <h2>🔒 Acceso restringido</h2>
+        <p style="color:var(--ink-soft); font-size:14px; margin-top:-6px;">Ingresa el código para ver esta área administrativa.</p>
+        <form id="gastos-lock-form" style="max-width:280px;">
+          <div class="field"><label>Código</label><input type="password" id="gastos-code" autocomplete="off" required></div>
+          <div id="gastos-code-error" style="display:none; color:var(--danger); font-size:12.5px; margin-bottom:10px;">Código incorrecto.</div>
+          <button type="submit" class="btn" id="gastos-enter-btn">Entrar</button>
+        </form>
+      </div>
+
+      <div id="gastos-content" style="display:none;">
+      <div class="card">
+        <h2>Nuevo gasto</h2>
+        <form id="gasto-form">
+          <div class="grid3">
+            <div class="field"><label>Fecha</label><input type="date" id="g-fecha" required></div>
+            <div class="field"><label>Categoría</label>
+              <select id="g-categoria">
+                <option>Mantenimiento</option><option>Servicios públicos</option><option>Insumos y aseo</option>
+                <option>Personal / jornales</option><option>Marketing y publicidad</option><option>Impuestos</option><option>Otros</option>
+              </select>
+            </div>
+            <div class="field"><label>Valor (COP)</label><input type="number" id="g-valor" min="0" step="1000" required placeholder="0"></div>
+          </div>
+          <div class="field"><label>Descripción</label><input id="g-desc" placeholder="Ej: pintura de la fachada, pago de luz..."></div>
+          <div class="btnrow"><button type="submit" class="btn">Registrar gasto</button></div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <h2 style="margin:0;">Movimientos</h2>
+          <div class="field" style="margin:0; width:180px;"><input type="month" id="g-filtro"></div>
+        </div>
+        <div id="balance" class="balance-row"></div>
+        <div id="gasto-table-wrap"></div>
+      </div>
+      </div>
+    </section>
+
+    <!-- CALENDARIO -->
+    <section id="tab-calendario" style="display:none; --accent:var(--sky);">
+      <div class="topline">
+        <div class="ttl"><span class="ico-big">📅</span><div><h1>Calendario</h1><p>Festivos y fechas especiales de Colombia, pensados para planear el alquiler.</p></div></div>
+      </div>
+
+      <div class="card">
+        <div class="cal-head">
+          <div class="seg" id="cal-seg">
+            <button data-view="finde" class="active">Fin de semana</button>
+            <button data-view="semana">Semanal</button>
+            <button data-view="mes">Mes a mes</button>
+          </div>
+          <div class="navmini" id="cal-nav"></div>
+        </div>
+        <div id="cal-body"></div>
+        <div class="legend">
+          <span><i class="dot" style="background:color-mix(in srgb, var(--ochre) 55%, var(--paper-2));"></i>Festivo oficial</span>
+          <span><i class="dot" style="background:color-mix(in srgb, var(--sky) 45%, var(--paper-2));"></i>Fecha especial (alta demanda)</span>
+          <span><i class="dot" style="background:color-mix(in srgb, var(--sage) 45%, var(--paper-2));"></i>Fin de semana</span>
+          <span><i class="dot" style="background:var(--clay);"></i>Con reserva</span>
+        </div>
+      </div>
+
+      <div class="card daypanel" id="daypanel" style="display:none;"></div>
+    </section>
+
+    <!-- CHAT CON CLIENTES -->
+    <section id="tab-chat" style="display:none; --accent:var(--violet);">
+      <div class="topline">
+        <div class="ttl"><span class="ico-big">💬</span><div><h1>Chat con clientes</h1><p>Asistente para responder preguntas frecuentes de quien pregunta por la finca.</p></div></div>
+        <button class="kb-toggle" id="kb-toggle-btn">⚙️ Editar información de la finca</button>
+      </div>
+
+      <div class="card" id="kb-card" style="display:none;">
+        <h2>Información que usa el asistente</h2>
+        <div class="grid2">
+          <div class="field"><label>Nombre de la finca</label><input id="kb-nombre" placeholder="Ej: Finca Villa Juana"></div>
+          <div class="field"><label>Arrendador / propietario</label><input id="kb-propietario" placeholder="Nombre de quien arrienda"></div>
+          <div class="field"><label>Documento del arrendador (CC/NIT)</label><input id="kb-doc" placeholder="Ej: CC 12345678"></div>
+          <div class="field"><label>Precio</label><input id="kb-precio" placeholder="Ej: $350.000 fin de semana / $280.000 entre semana"></div>
+          <div class="field"><label>Capacidad</label><input id="kb-capacidad" placeholder="Ej: hasta 15 personas, 5 habitaciones"></div>
+          <div class="field"><label>Qué incluye</label><input id="kb-incluye" placeholder="Ej: piscina, zona BBQ, wifi, parqueadero"></div>
+          <div class="field"><label>Política de mascotas</label><input id="kb-mascotas" placeholder="Ej: sí, con depósito adicional"></div>
+          <div class="field"><label>Ubicación</label><input id="kb-ubicacion" placeholder="Ej: vereda La Villa, 40 min de Medellín"></div>
+          <div class="field"><label>Contacto</label><input id="kb-telefono" placeholder="Ej: 300 000 0000"></div>
+        </div>
+        <div class="btnrow"><button class="btn" id="kb-save">Guardar información</button></div>
+      </div>
+
+      <div class="card">
+        <div class="chips">
+          <button class="chip" data-q="precio">💰 Precio</button>
+          <button class="chip" data-q="incluye">🏡 Qué incluye</button>
+          <button class="chip" data-q="capacidad">👥 Capacidad</button>
+          <button class="chip" data-q="mascotas">🐾 Mascotas</button>
+          <button class="chip" data-q="ubicacion">📍 Ubicación</button>
+          <button class="chip" data-q="festivo">📅 Próximo festivo</button>
+          <button class="chip" data-q="disponibilidad">🟢 Consultar disponibilidad</button>
+          <button class="chip" data-q="contacto">📞 Contacto directo</button>
+        </div>
+        <div class="chat-wrap">
+          <div class="chat-log" id="chat-log"></div>
+          <form class="chat-inputrow" id="chat-form">
+            <input id="chat-input" placeholder="Escribe como si fueras el cliente..." autocomplete="off">
+            <button type="submit" class="btn">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="print-area"></div>
+</div>
+
+<script>
+/* ---------- Persistencia ---------- */
+const LS_RES = 'finca_reservas_v1';
+const LS_GAS = 'finca_gastos_v1';
+function load(key, fallback){ try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; } }
+function save(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){ console.warn('No se pudo guardar', e); } }
+
+let reservas = load(LS_RES, []);
+let gastos = load(LS_GAS, []);
+
+/* ---------- Utilidades de fecha ---------- */
+const DOW = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+function ymd(d){ const p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`; }
+function parseYMD(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
+function sameDay(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+function toMonday(d){ const r=new Date(d); const day=r.getDay(); if(day===1) return r; const add=(1-day+7)%7; r.setDate(r.getDate()+add); return r; }
+function nthWeekday(year,month,weekday,n){ // month 0-11, weekday 0-6, n=1..
+  let d = new Date(year,month,1); let count=0;
+  while(true){ if(d.getDay()===weekday){ count++; if(count===n) return new Date(d); } d=addDays(d,1); }
+}
+function easterDate(year){
+  const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),
+        g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,
+        m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=((h+l-7*m+114)%31)+1;
+  return new Date(year, month-1, day);
+}
+function colombiaEvents(year){
+  const easter = easterDate(year);
+  const ev = [];
+  const F=(m,d,name)=>ev.push({date:new Date(year,m-1,d), name, tipo:'festivo'});
+  const M=(m,d,name)=>ev.push({date:toMonday(new Date(year,m-1,d)), name, tipo:'festivo'});
+  // fijos no trasladables
+  F(1,1,'Año Nuevo'); F(5,1,'Día del Trabajo'); F(7,20,'Independencia de Colombia');
+  F(8,7,'Batalla de Boyacá'); F(12,8,'Inmaculada Concepción'); F(12,25,'Navidad');
+  // Emiliani (se trasladan al lunes siguiente)
+  M(1,6,'Reyes Magos'); M(3,19,'San José'); M(6,29,'San Pedro y San Pablo');
+  M(8,15,'Asunción de la Virgen'); M(10,12,'Día de la Raza'); M(11,1,'Todos los Santos'); M(11,11,'Independencia de Cartagena');
+  // basados en pascua
+  ev.push({date:addDays(easter,-3), name:'Jueves Santo', tipo:'festivo'});
+  ev.push({date:addDays(easter,-2), name:'Viernes Santo', tipo:'festivo'});
+  ev.push({date:toMonday(addDays(easter,39)), name:'Ascensión del Señor', tipo:'festivo'});
+  ev.push({date:toMonday(addDays(easter,60)), name:'Corpus Christi', tipo:'festivo'});
+  ev.push({date:toMonday(addDays(easter,68)), name:'Sagrado Corazón', tipo:'festivo'});
+  // fechas especiales (alta demanda turística, no festivas)
+  ev.push({date:addDays(easter,-7), name:'Domingo de Ramos', tipo:'especial'});
+  ev.push({date:easter, name:'Domingo de Resurrección', tipo:'especial'});
+  ev.push({date:new Date(year,1,14), name:'San Valentín', tipo:'especial'});
+  ev.push({date:nthWeekday(year,4,0,2), name:'Día de la Madre', tipo:'especial'});
+  ev.push({date:nthWeekday(year,5,0,3), name:'Día del Padre', tipo:'especial'});
+  ev.push({date:nthWeekday(year,8,6,3), name:'Amor y Amistad', tipo:'especial'});
+  ev.push({date:new Date(year,9,31), name:'Halloween', tipo:'especial'});
+  ev.push({date:new Date(year,11,7), name:'Día de las Velitas', tipo:'especial'});
+  ev.push({date:new Date(year,11,24), name:'Nochebuena', tipo:'especial'});
+  ev.push({date:new Date(year,11,31), name:'Fin de año', tipo:'especial'});
+  return ev;
+}
+let eventCache = {};
+function eventsForYear(y){ if(!eventCache[y]) eventCache[y]=colombiaEvents(y); return eventCache[y]; }
+function eventsOn(date){
+  return eventsForYear(date.getFullYear()).filter(e=>sameDay(e.date,date));
+}
+function isPuenteMonday(date){
+  if(date.getDay()!==1) return false;
+  return eventsOn(date).some(e=>e.tipo==='festivo');
+}
+
+/* ---------- Bloqueo de Gastos ---------- */
+const GASTOS_CODE = 'villajuana';
+let gastosUnlocked = false;
+function tryUnlockGastos(){
+  const raw = document.getElementById('gastos-code').value || '';
+  const val = raw.replace(/\s+/g,'').toLowerCase();
+  if(val === GASTOS_CODE){
+    gastosUnlocked = true;
+    document.getElementById('gastos-lock').style.display='none';
+    document.getElementById('gastos-content').style.display='';
+    document.getElementById('gastos-code-error').style.display='none';
+    renderGastos();
+  } else {
+    document.getElementById('gastos-code-error').style.display='';
+  }
+  document.getElementById('gastos-code').value='';
+}
+document.getElementById('gastos-lock-form').addEventListener('submit', e=>{
+  e.preventDefault();
+  tryUnlockGastos();
+});
+document.getElementById('gastos-enter-btn').addEventListener('click', e=>{
+  e.preventDefault();
+  tryUnlockGastos();
+});
+function showGastosGate(){
+  document.getElementById('gastos-lock').style.display = gastosUnlocked ? 'none' : '';
+  document.getElementById('gastos-content').style.display = gastosUnlocked ? '' : 'none';
+}
+
+/* ---------- Tabs ---------- */
+const tabs = ['reservas','gastos','calendario','chat'];
+function showTab(t){
+  tabs.forEach(x=>{
+    document.getElementById('tab-'+x).style.display = (x===t)?'':'none';
+  });
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active', b.dataset.tab===t));
+  if(t==='calendario') renderCalendar();
+  if(t==='gastos'){ showGastosGate(); if(gastosUnlocked) renderGastos(); }
+  if(t==='reservas') renderReservas();
+  if(t==='chat') renderChat();
+}
+document.getElementById('nav').addEventListener('click', e=>{
+  const b = e.target.closest('.navbtn'); if(!b) return;
+  showTab(b.dataset.tab);
+});
+
+/* ---------- RESERVAS ---------- */
+const MEDIA_FIELDS = { media:'r-media', mediaEntrada:'r-media-checkin', mediaSalida:'r-media-checkout' };
+let pending = { media:[], mediaEntrada:[], mediaSalida:[] };
+
+function fmtCOP(n){ return '$'+Number(n||0).toLocaleString('es-CO'); }
+function fmtDateHuman(s){ const d=parseYMD(s); return `${d.getDate()} ${MESES[d.getMonth()].slice(0,3)} ${d.getFullYear()}`; }
+
+function resizeImage(file, maxW=900, quality=0.72){
+  return new Promise((resolve,reject)=>{
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = ()=>{ img.onload = ()=>{
+      const scale = Math.min(1, maxW/img.width);
+      const w = Math.round(img.width*scale), h = Math.round(img.height*scale);
+      const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    }; img.onerror=reject; img.src = reader.result; };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+function readAsDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file);
+  });
+}
+
+Object.entries(MEDIA_FIELDS).forEach(([key, inputId])=>{
+  document.getElementById(inputId).addEventListener('change', async (e)=>{
+    const files = Array.from(e.target.files);
+    for(const f of files){
+      if(f.type.startsWith('image/')){
+        const data = await resizeImage(f);
+        pending[key].push({type:'image', name:f.name, data});
+      } else if(f.type.startsWith('video/')){
+        if(f.size < 3*1024*1024){
+          const data = await readAsDataURL(f);
+          pending[key].push({type:'video', name:f.name, data, persist:true});
+        } else {
+          const data = URL.createObjectURL(f);
+          pending[key].push({type:'video', name:f.name, data, persist:false});
+        }
+      }
+    }
+    e.target.value = '';
+    renderPendingMedia(key);
+  });
+});
+
+function renderPendingMedia(key){
+  const inputId = MEDIA_FIELDS[key];
+  const hostId = 'pending-gallery-'+key;
+  let host = document.getElementById(hostId);
+  if(!host){
+    host = document.createElement('div'); host.className='gallery'; host.id=hostId;
+    document.getElementById(inputId).insertAdjacentElement('afterend', host);
+  }
+  host.innerHTML = pending[key].map((m,i)=>`
+    <div class="thumb">
+      ${m.type==='image' ? `<img src="${m.data}">` : `<video src="${m.data}" muted></video><span class="vidtag">${m.persist===false?'no se guardará':'video'}</span>`}
+      <button class="rm" type="button" data-i="${i}" title="Quitar">✕</button>
+    </div>`).join('');
+  host.querySelectorAll('.rm').forEach(btn=>btn.addEventListener('click', ()=>{
+    pending[key].splice(Number(btn.dataset.i),1); renderPendingMedia(key);
+  }));
+}
+function resetPendingMedia(){
+  Object.keys(MEDIA_FIELDS).forEach(key=>{
+    pending[key]=[];
+    const el = document.getElementById('pending-gallery-'+key); if(el) el.remove();
+  });
+}
+
+document.getElementById('res-form').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const id = document.getElementById('r-id').value || String(Date.now());
+  const existing = reservas.find(r=>r.id===id);
+  const merged = {};
+  Object.keys(MEDIA_FIELDS).forEach(key=>{
+    const nuevos = pending[key].filter(m=>m.persist!==false);
+    merged[key] = existing ? (existing[key]||[]).concat(nuevos) : nuevos;
+  });
+  const rec = {
+    id,
+    cliente: document.getElementById('r-cliente').value.trim(),
+    contacto: document.getElementById('r-contacto').value.trim(),
+    documento: document.getElementById('r-documento').value.trim(),
+    checkin: document.getElementById('r-checkin').value,
+    checkout: document.getElementById('r-checkout').value,
+    precio: Number(document.getElementById('r-precio').value||0),
+    ninos: Number(document.getElementById('r-ninos').value||0),
+    jovenes: Number(document.getElementById('r-jovenes').value||0),
+    adultos: Number(document.getElementById('r-adultos').value||0),
+    nombres: document.getElementById('r-nombres').value.trim(),
+    notas: document.getElementById('r-notas').value.trim(),
+    media: merged.media,
+    mediaEntrada: merged.mediaEntrada,
+    mediaSalida: merged.mediaSalida
+  };
+  if(!rec.checkin || !rec.checkout){ return; }
+  const idx = reservas.findIndex(r=>r.id===id);
+  if(idx>=0) reservas[idx]=rec; else reservas.push(rec);
+  save(LS_RES, reservas);
+  resetPendingMedia();
+  e.target.reset();
+  document.getElementById('r-id').value='';
+  document.getElementById('res-form-title').textContent='Nueva reserva';
+  document.getElementById('res-cancel').style.display='none';
+  renderReservas();
+});
+document.getElementById('res-cancel').addEventListener('click', ()=>{
+  document.getElementById('res-form').reset();
+  document.getElementById('r-id').value='';
+  document.getElementById('res-form-title').textContent='Nueva reserva';
+  document.getElementById('res-cancel').style.display='none';
+  resetPendingMedia();
+});
+
+function imprimirOcupacion(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const activas = reservas.filter(r=>{ const ci=parseYMD(r.checkin), co=parseYMD(r.checkout); return ci<=today && co>today; });
+  const total = activas.reduce((s,r)=>s+totalPersonas(r),0);
+  const ninos = activas.reduce((s,r)=>s+(r.ninos||0),0);
+  const jovenes = activas.reduce((s,r)=>s+(r.jovenes||0),0);
+  const adultos = activas.reduce((s,r)=>s+(r.adultos||0),0);
+  document.getElementById('print-area').innerHTML = `
+    <div class="print-doc">
+      <h1>${kb.nombre || 'Finca'}</h1>
+      <div class="sub">${kb.ubicacion||''}</div>
+      <h2>Listado de personas en la finca</h2>
+      <div class="sub">${today.getDate()} de ${MESES[today.getMonth()]} de ${today.getFullYear()} — Total: ${total} persona(s) (${adultos} adultos · ${jovenes} jóvenes · ${ninos} niños)</div>
+      <table>
+        <tr><td><strong>Cliente / responsable</strong></td><td><strong>Personas</strong></td><td><strong>Nombres</strong></td><td><strong>Hasta</strong></td></tr>
+        ${activas.length? activas.map(r=>`<tr><td>${r.cliente}</td><td>${desglose(r)||totalPersonas(r)||'—'}</td><td>${r.nombres||'—'}</td><td>${fmtDateHuman(r.checkout)}</td></tr>`).join('') : `<tr><td colspan="4">No hay huéspedes en la finca hoy.</td></tr>`}
+      </table>
+      <div class="foot">Listado generado el ${today.getDate()} de ${MESES[today.getMonth()]} de ${today.getFullYear()}.</div>
+    </div>`;
+  window.print();
+}
+document.getElementById('print-ocupacion-btn').addEventListener('click', imprimirOcupacion);
+
+function noches(ci,co){ return Math.max(1, Math.round((parseYMD(co)-parseYMD(ci))/86400000)); }
+
+function imprimirFactura(id){
+  const r = reservas.find(x=>x.id===id); if(!r) return;
+  const hoy = new Date();
+  const n = noches(r.checkin, r.checkout);
+  document.getElementById('print-area').innerHTML = `
+    <div class="print-doc">
+      <h1>${kb.nombre || 'Finca'}</h1>
+      <div class="sub">${kb.ubicacion||''}${kb.telefono?(' · Tel: '+kb.telefono):''}</div>
+      <h2>Tiquete / recibo de arriendo</h2>
+      <div class="sub">Fecha de emisión: ${hoy.getDate()} de ${MESES[hoy.getMonth()]} de ${hoy.getFullYear()}</div>
+      <table>
+        <tr><td class="k">Cliente</td><td>${r.cliente}</td></tr>
+        ${r.documento?`<tr><td class="k">Documento</td><td>${r.documento}</td></tr>`:''}
+        ${r.contacto?`<tr><td class="k">Contacto</td><td>${r.contacto}</td></tr>`:''}
+        <tr><td class="k">Entrada</td><td>${fmtDateHuman(r.checkin)}</td></tr>
+        <tr><td class="k">Salida</td><td>${fmtDateHuman(r.checkout)}</td></tr>
+        <tr><td class="k">Noches</td><td>${n}</td></tr>
+        <tr><td class="k">Personas</td><td>${desglose(r) || totalPersonas(r) || '—'}</td></tr>
+        ${r.nombres?`<tr><td class="k">Huéspedes</td><td>${r.nombres}</td></tr>`:''}
+        ${r.notas?`<tr><td class="k">Notas</td><td>${r.notas}</td></tr>`:''}
+      </table>
+      <div class="total">Total: ${fmtCOP(r.precio)}</div>
+      <div class="foot">Documento generado como comprobante interno de arriendo. No constituye factura electrónica ante la DIAN.</div>
+    </div>`;
+  window.print();
+}
+
+function imprimirContrato(id){
+  const r = reservas.find(x=>x.id===id); if(!r) return;
+  const hoy = new Date();
+  const n = noches(r.checkin, r.checkout);
+  document.getElementById('print-area').innerHTML = `
+    <div class="print-doc">
+      <h1>Contrato de arrendamiento temporal de vivienda</h1>
+      <div class="sub">${kb.nombre||'Finca'}${kb.ubicacion?(' — '+kb.ubicacion):''}</div>
+      <p>Entre los suscritos, a saber: <strong>${kb.propietario||'________________'}</strong>${kb.doc?(', identificado con '+kb.doc):''}, quien en adelante se denominará EL ARRENDADOR, y <strong>${r.cliente}</strong>${r.documento?(', identificado con '+r.documento):''}${r.contacto?(', con contacto '+r.contacto):''}, quien en adelante se denominará EL ARRENDATARIO, se celebra el presente contrato de arrendamiento de uso temporal (vacacional), regido por las siguientes cláusulas:</p>
+
+      <h2>Primera — Objeto</h2>
+      <p>EL ARRENDADOR entrega en arriendo temporal a EL ARRENDATARIO el inmueble ubicado en ${kb.ubicacion||'________________'}, conocido como "${kb.nombre||'la finca'}", con capacidad de ${kb.capacidad||'la capacidad acordada'}.</p>
+
+      <h2>Segunda — Término</h2>
+      <p>El arriendo tendrá vigencia desde el ${fmtDateHuman(r.checkin)} hasta el ${fmtDateHuman(r.checkout)}, equivalente a ${n} noche(s), no prorrogable de forma automática.</p>
+
+      <h2>Tercera — Valor y forma de pago</h2>
+      <p>El valor total acordado por el arriendo es de ${fmtCOP(r.precio)}, que EL ARRENDATARIO se compromete a cancelar en los términos acordados previamente con EL ARRENDADOR.</p>
+
+      <h2>Cuarta — Ocupantes</h2>
+      <p>El inmueble será ocupado por un máximo de ${totalPersonas(r)||'las personas acordadas'} persona(s)${desglose(r)?(' ('+desglose(r)+')'):''}${r.nombres?('. Huéspedes: '+r.nombres):''}. Cualquier persona adicional deberá ser autorizada previamente por EL ARRENDADOR.</p>
+
+      <h2>Quinta — Mascotas</h2>
+      <p>${kb.mascotas || 'No se especifica una política de mascotas para este arriendo; cualquier excepción deberá acordarse directamente con EL ARRENDADOR.'}</p>
+
+      <h2>Sexta — Obligaciones de EL ARRENDATARIO</h2>
+      <p>EL ARRENDATARIO se compromete a hacer buen uso del inmueble y sus dotaciones, cuidar las instalaciones, cumplir las normas de convivencia y seguridad del sector, y restituir el inmueble en el mismo estado en que lo recibió, salvo el desgaste normal por el uso. Cualquier daño ocasionado durante la estadía será asumido por EL ARRENDATARIO.</p>
+
+      <h2>Séptima — Cancelaciones</h2>
+      <p>Las condiciones de cancelación o cambio de fechas deberán acordarse directamente entre las partes con la mayor anticipación posible.</p>
+
+      <div class="firmas">
+        <div class="firma">EL ARRENDADOR<br>${kb.propietario||''}</div>
+        <div class="firma">EL ARRENDATARIO<br>${r.cliente}</div>
+      </div>
+      <div class="foot">Contrato generado el ${hoy.getDate()} de ${MESES[hoy.getMonth()]} de ${hoy.getFullYear()}. Documento de referencia; se recomienda revisión legal para casos particulares.</div>
+    </div>`;
+  window.print();
+}
+
+function editReserva(id){
+  const r = reservas.find(x=>x.id===id); if(!r) return;
+  document.getElementById('r-id').value=r.id;
+  document.getElementById('r-cliente').value=r.cliente;
+  document.getElementById('r-contacto').value=r.contacto;
+  document.getElementById('r-documento').value=r.documento||'';
+  document.getElementById('r-checkin').value=r.checkin;
+  document.getElementById('r-checkout').value=r.checkout;
+  document.getElementById('r-precio').value=r.precio;
+  document.getElementById('r-ninos').value=r.ninos||'';
+  document.getElementById('r-jovenes').value=r.jovenes||'';
+  document.getElementById('r-adultos').value=r.adultos||'';
+  document.getElementById('r-nombres').value=r.nombres||'';
+  document.getElementById('r-notas').value=r.notas;
+  document.getElementById('res-form-title').textContent='Editar reserva de '+r.cliente;
+  document.getElementById('res-cancel').style.display='inline-flex';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function deleteReserva(id){
+  if(!confirm('¿Eliminar esta reserva y sus fotos/videos?')) return;
+  reservas = reservas.filter(r=>r.id!==id);
+  save(LS_RES, reservas);
+  renderReservas();
+}
+function removeMedia(resId, key, idx){
+  const r = reservas.find(x=>x.id===resId); if(!r) return;
+  (r[key]||[]).splice(idx,1); save(LS_RES, reservas); renderReservas();
+}
+
+function totalPersonas(r){ return (r.ninos||0)+(r.jovenes||0)+(r.adultos||0); }
+function desglose(r){
+  const parts=[];
+  if(r.adultos) parts.push(`${r.adultos} adulto${r.adultos===1?'':'s'}`);
+  if(r.jovenes) parts.push(`${r.jovenes} joven${r.jovenes===1?'':'es'}`);
+  if(r.ninos) parts.push(`${r.ninos} niño${r.ninos===1?'':'s'}`);
+  return parts.join(' · ');
+}
+function renderOcupacion(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const activas = reservas.filter(r=>{ const ci=parseYMD(r.checkin), co=parseYMD(r.checkout); return ci<=today && co>today; });
+  const total = activas.reduce((s,r)=>s+totalPersonas(r),0);
+  const ninos = activas.reduce((s,r)=>s+(r.ninos||0),0);
+  const jovenes = activas.reduce((s,r)=>s+(r.jovenes||0),0);
+  const adultos = activas.reduce((s,r)=>s+(r.adultos||0),0);
+  const host = document.getElementById('ocupacion-body');
+  if(activas.length===0){
+    host.innerHTML = `<div class="empty">Hoy no hay huéspedes en la finca.</div>`;
+    return;
+  }
+  host.innerHTML = `
+    <div class="stats" style="margin-bottom:12px;">
+      <div class="stat"><b>${total}</b><span>Personas en este momento</span></div>
+      <div class="stat"><b>${adultos}</b><span>Adultos</span></div>
+      <div class="stat"><b>${jovenes}</b><span>Jóvenes</span></div>
+      <div class="stat"><b>${ninos}</b><span>Niños</span></div>
+    </div>
+    ${activas.map(r=>`
+      <div class="resmini" style="margin-bottom:8px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+        <span><strong>${r.cliente}</strong> — hasta ${fmtDateHuman(r.checkout)}${r.nombres?(' · '+r.nombres):''}</span>
+        <span class="pill upcoming">${desglose(r)||(totalPersonas(r)+' persona(s)')}</span>
+      </div>`).join('')}`;
+}
+
+function renderReservas(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const sorted = [...reservas].sort((a,b)=>parseYMD(b.checkin)-parseYMD(a.checkin));
+  const upcoming = reservas.filter(r=>parseYMD(r.checkout)>=today).length;
+  const ingresos = reservas.reduce((s,r)=>s+r.precio,0);
+  document.getElementById('res-stats').innerHTML = `
+    <div class="stat"><b>${reservas.length}</b><span>Reservas totales</span></div>
+    <div class="stat"><b>${upcoming}</b><span>Próximas / en curso</span></div>
+    <div class="stat"><b>${fmtCOP(ingresos)}</b><span>Ingresos acumulados</span></div>`;
+  renderOcupacion();
+
+  const host = document.getElementById('res-list');
+  if(sorted.length===0){ host.innerHTML = `<div class="empty">Aún no hay reservas registradas. Usa el formulario de arriba para agregar la primera.</div>`; return; }
+  host.innerHTML = sorted.map(r=>{
+    const ci=parseYMD(r.checkin), co=parseYMD(r.checkout);
+    let estado='past', label='Finalizada';
+    if(co>=today && ci<=today){ estado='upcoming'; label='En curso'; }
+    else if(ci>today){ estado='upcoming'; label='Próxima'; }
+    const buildGallery = (key)=> (r[key]||[]).map((m,i)=>`
+      <div class="thumb">
+        ${m.type==='image'?`<img src="${m.data}">`:`<video src="${m.data}" muted controls></video><span class="vidtag">video</span>`}
+        <button class="rm" onclick="removeMedia('${r.id}','${key}',${i})" title="Quitar">✕</button>
+      </div>`).join('');
+    const gallery = buildGallery('media');
+    const galEntrada = buildGallery('mediaEntrada');
+    const galSalida = buildGallery('mediaSalida');
+    return `<div class="res-card">
+      <div class="res-head">
+        <div><h3>${r.cliente||'(sin nombre)'}</h3><div class="res-dates">${fmtDateHuman(r.checkin)} → ${fmtDateHuman(r.checkout)}</div></div>
+        <span class="pill ${estado}">${label}</span>
+      </div>
+      <div class="res-body">${r.contacto?('📞 '+r.contacto+' · '):''}${totalPersonas(r)?('👥 '+desglose(r)+(r.nombres?(': '+r.nombres):'')+' · '):''}${r.notas||''}</div>
+      <div class="res-price">${fmtCOP(r.precio)}</div>
+      ${gallery?`<div class="note" style="margin-top:10px;">Fotos y videos de la estadía</div><div class="gallery">${gallery}</div>`:''}
+      <div class="note" style="margin-top:10px;">📥 Entrega al recibir la finca</div>
+      <div class="gallery">${galEntrada || '<span class="note">Sin fotos aún.</span>'}</div>
+      <div class="note" style="margin-top:10px;">📤 Entrega al salir de la finca</div>
+      <div class="gallery">${galSalida || '<span class="note">Sin fotos aún.</span>'}</div>
+      <div class="btnrow" style="margin-top:12px;">
+        <button class="btn small ghost" onclick="editReserva('${r.id}')">Editar</button>
+        <button class="btn small ghost" onclick="imprimirFactura('${r.id}')">🖨️ Factura</button>
+        <button class="btn small ghost" onclick="imprimirContrato('${r.id}')">📄 Contrato</button>
+        <button class="btn danger" onclick="deleteReserva('${r.id}')">Eliminar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- GASTOS ---------- */
+document.getElementById('gasto-form').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  gastos.push({
+    id:String(Date.now()),
+    fecha:document.getElementById('g-fecha').value,
+    categoria:document.getElementById('g-categoria').value,
+    valor:Number(document.getElementById('g-valor').value||0),
+    desc:document.getElementById('g-desc').value.trim()
+  });
+  save(LS_GAS, gastos);
+  e.target.reset();
+  renderGastos();
+});
+function deleteGasto(id){
+  gastos = gastos.filter(g=>g.id!==id); save(LS_GAS, gastos); renderGastos();
+}
+document.getElementById('g-filtro').addEventListener('change', renderGastos);
+
+function renderGastos(){
+  const filtro = document.getElementById('g-filtro').value; // YYYY-MM
+  const gFiltered = filtro ? gastos.filter(g=>g.fecha && g.fecha.startsWith(filtro)) : gastos;
+  const rFiltered = filtro ? reservas.filter(r=>r.checkin && r.checkin.startsWith(filtro)) : reservas;
+  const totalGastos = gFiltered.reduce((s,g)=>s+g.valor,0);
+  const totalIngresos = rFiltered.reduce((s,r)=>s+r.precio,0);
+  const balance = totalIngresos - totalGastos;
+  document.getElementById('balance').innerHTML = `
+    <div class="bal ok"><span>Ingresos (reservas)</span><b>${fmtCOP(totalIngresos)}</b></div>
+    <div class="bal bad"><span>Gastos y costos</span><b>${fmtCOP(totalGastos)}</b></div>
+    <div class="bal ${balance>=0?'ok':'bad'}"><span>Balance neto</span><b>${fmtCOP(balance)}</b></div>`;
+
+  const wrap = document.getElementById('gasto-table-wrap');
+  const sorted = [...gFiltered].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));
+  if(sorted.length===0){ wrap.innerHTML = `<div class="empty">Sin gastos ${filtro?'en este mes':'registrados aún'}.</div>`; return; }
+  wrap.innerHTML = `<table><thead><tr><th>Fecha</th><th>Categoría</th><th>Descripción</th><th class="num">Valor</th><th></th></tr></thead>
+    <tbody>${sorted.map(g=>`<tr>
+      <td>${g.fecha?fmtDateHuman(g.fecha):'—'}</td>
+      <td><span class="cat-tag">${g.categoria}</span></td>
+      <td>${g.desc||'—'}</td>
+      <td class="num">${fmtCOP(g.valor)}</td>
+      <td><button class="btn danger small" onclick="deleteGasto('${g.id}')">Eliminar</button></td>
+    </tr>`).join('')}</tbody></table>`;
+}
+
+/* ---------- CALENDARIO ---------- */
+let calView = 'finde';
+let calCursor = new Date(); calCursor.setHours(0,0,0,0);
+
+document.getElementById('cal-seg').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return;
+  calView = b.dataset.view;
+  document.querySelectorAll('#cal-seg button').forEach(x=>x.classList.toggle('active', x===b));
+  document.getElementById('daypanel').style.display='none';
+  renderCalendar();
+});
+
+function reservasOn(date){
+  return reservas.filter(r=>{ const ci=parseYMD(r.checkin), co=parseYMD(r.checkout); return date>=ci && date<co; });
+}
+
+function renderCalendar(){
+  const nav = document.getElementById('cal-nav');
+  const body = document.getElementById('cal-body');
+  if(calView==='mes'){
+    nav.innerHTML = `<button id="prev">‹</button><strong>${MESES[calCursor.getMonth()]} ${calCursor.getFullYear()}</strong><button id="next">›</button>`;
+    nav.querySelector('#prev').onclick=()=>{ calCursor=new Date(calCursor.getFullYear(),calCursor.getMonth()-1,1); renderCalendar(); };
+    nav.querySelector('#next').onclick=()=>{ calCursor=new Date(calCursor.getFullYear(),calCursor.getMonth()+1,1); renderCalendar(); };
+    renderMonth(body);
+  } else if(calView==='semana'){
+    const monday = toMonday(calCursor.getDay()===0?addDays(calCursor,-6):calCursor);
+    nav.innerHTML = `<button id="prev">‹</button><strong>Semana del ${monday.getDate()} de ${MESES[monday.getMonth()]}</strong><button id="next">›</button>`;
+    nav.querySelector('#prev').onclick=()=>{ calCursor=addDays(calCursor,-7); renderCalendar(); };
+    nav.querySelector('#next').onclick=()=>{ calCursor=addDays(calCursor,7); renderCalendar(); };
+    renderWeek(body, monday);
+  } else {
+    nav.innerHTML = `<span style="font-size:12.5px;color:var(--ink-soft);">Próximos fines de semana, con festivos y puentes marcados</span>`;
+    renderWeekends(body);
+  }
+}
+
+function renderMonth(body){
+  const y = calCursor.getFullYear(), m = calCursor.getMonth();
+  const first = new Date(y,m,1);
+  const startOffset = first.getDay(); // 0=domingo
+  const daysInMonth = new Date(y,m+1,0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+  let html = `<div class="month-grid">` + DOW.map(d=>`<div class="dow">${d}</div>`).join('');
+  const gridStart = addDays(first, -startOffset);
+  for(let i=0;i<42;i++){
+    const d = addDays(gridStart,i);
+    if(i>=35 && d.getMonth()!==m) break;
+    const inMonth = d.getMonth()===m;
+    const evs = eventsOn(d);
+    const fest = evs.find(e=>e.tipo==='festivo');
+    const esp = evs.find(e=>e.tipo==='especial');
+    const isWknd = d.getDay()===0 || d.getDay()===6;
+    const occ = reservasOn(d).length>0;
+    let cls='day'; if(!inMonth) cls+=' other'; if(sameDay(d,today)) cls+=' today';
+    if(fest) cls+=' holiday'; else if(esp) cls+=' special'; else if(isWknd) cls+=' weekend';
+    html += `<div class="${cls}" data-date="${ymd(d)}">
+      <div class="dnum">${d.getDate()}</div>
+      ${fest?`<div class="tag">${fest.name}</div>`:esp?`<div class="tag">${esp.name}</div>`:''}
+      ${occ?'<span class="occ"></span>':''}
+    </div>`;
+  }
+  html += `</div>`;
+  body.innerHTML = html;
+  body.querySelectorAll('.day').forEach(el=>el.addEventListener('click', ()=>openDayPanel(parseYMD(el.dataset.date))));
+}
+
+function renderWeek(body, monday){
+  const today = new Date(); today.setHours(0,0,0,0);
+  let html = `<div class="week-strip">`;
+  for(let i=0;i<7;i++){
+    const d = addDays(monday,i);
+    const evs = eventsOn(d);
+    const fest = evs.find(e=>e.tipo==='festivo');
+    const esp = evs.find(e=>e.tipo==='especial');
+    const dayRes = reservasOn(d);
+    let cls='wcol'; if(fest) cls+=' holiday'; if(sameDay(d,today)) cls+=' today';
+    html += `<div class="${cls}" data-date="${ymd(d)}">
+      <div class="wd">${DOW[d.getDay()]}</div>
+      <div class="wn">${d.getDate()}</div>
+      ${fest?`<div class="tag">🎉 ${fest.name}</div>`:esp?`<div class="tag" style="color:var(--sky);">${esp.name}</div>`:''}
+      ${dayRes.map(r=>`<div class="resmini">${r.cliente}</div>`).join('')}
+    </div>`;
+  }
+  html += `</div>`;
+  body.innerHTML = html;
+  body.querySelectorAll('.wcol').forEach(el=>el.addEventListener('click', ()=>openDayPanel(parseYMD(el.dataset.date))));
+}
+
+function renderWeekends(body){
+  const today = new Date(); today.setHours(0,0,0,0);
+  // find the upcoming Saturday
+  let sat = new Date(today);
+  while(sat.getDay()!==6) sat = addDays(sat,1);
+  let html = `<div class="wknd-list">`;
+  for(let w=0; w<16; w++){
+    const s = addDays(sat, w*7);
+    const sun = addDays(s,1);
+    const mon = addDays(s,2);
+    const puente = isPuenteMonday(mon);
+    const span = puente ? [s,sun,mon] : [s,sun];
+    const names = span.map(d=>eventsOn(d).map(e=>e.name)).flat();
+    const occ = span.some(d=>reservasOn(d).length>0);
+    let badge = occ ? '<span class="badge reservado">Con reserva</span>' : `<span class="badge libre">Libre</span>`;
+    if(puente) badge = `<span class="badge puente">Puente festivo</span> ` + badge;
+    const rangeLabel = puente
+      ? `${s.getDate()}–${mon.getDate()} ${MESES[mon.getMonth()]}`
+      : `${s.getDate()}–${sun.getDate()} ${MESES[sun.getMonth()]}`;
+    html += `<div class="wknd ${puente?'puente':''}" data-date="${ymd(s)}">
+      <div><div class="wr">${rangeLabel} ${s.getFullYear()}</div>
+      <div class="wsub">${names.length?names.join(' · '):'Fin de semana regular'}</div></div>
+      ${badge}
+    </div>`;
+  }
+  html += `</div>`;
+  body.innerHTML = html;
+  body.querySelectorAll('.wknd').forEach(el=>el.addEventListener('click', ()=>openDayPanel(parseYMD(el.dataset.date))));
+}
+
+function openDayPanel(date){
+  const panel = document.getElementById('daypanel');
+  const evs = eventsOn(date);
+  const dayRes = reservasOn(date);
+  panel.style.display='';
+  panel.innerHTML = `
+    <h3>${DOW[date.getDay()]} ${date.getDate()} de ${MESES[date.getMonth()]} ${date.getFullYear()}</h3>
+    ${evs.length? evs.map(e=>`<div class="tag" style="font-size:13px; margin-bottom:4px;">${e.tipo==='festivo'?'🎉 Festivo':'✨ Fecha especial'}: <strong>${e.name}</strong></div>`).join('') : '<div class="note">Sin festivo ni fecha especial.</div>'}
+    <div style="margin-top:10px;">
+      ${dayRes.length ? dayRes.map(r=>`<div class="resmini" style="margin-bottom:6px;">${r.cliente} — ${fmtDateHuman(r.checkin)} → ${fmtDateHuman(r.checkout)} — ${fmtCOP(r.precio)}</div>`).join('') : '<div class="note">Sin reservas para este día.</div>'}
+    </div>
+    <div class="btnrow">
+      <button class="btn small" id="dp-add">Crear reserva desde aquí</button>
+    </div>`;
+  document.getElementById('dp-add').onclick = ()=>{
+    showTab('reservas');
+    document.getElementById('r-checkin').value = ymd(date);
+    document.getElementById('r-checkout').value = ymd(addDays(date,1));
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+}
+
+/* ---------- CHAT CON CLIENTES ---------- */
+const LS_KB = 'finca_kb_v1';
+const LS_CHAT = 'finca_chat_v1';
+const KB_DEFAULT = {nombre:'', propietario:'', doc:'', precio:'', capacidad:'', incluye:'', mascotas:'', ubicacion:'Sopetrán, Antioquia', telefono:''};
+let kb = Object.assign({}, KB_DEFAULT, load(LS_KB, {}));
+let chatLog = load(LS_CHAT, []);
+
+function quitarTildes(s){ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+function norm(s){ return quitarTildes((s||'').toLowerCase()); }
+
+document.getElementById('kb-toggle-btn').addEventListener('click', ()=>{
+  const card = document.getElementById('kb-card');
+  const open = card.style.display !== 'none';
+  if(!open){
+    document.getElementById('kb-nombre').value = kb.nombre;
+    document.getElementById('kb-propietario').value = kb.propietario;
+    document.getElementById('kb-doc').value = kb.doc;
+    document.getElementById('kb-precio').value = kb.precio;
+    document.getElementById('kb-capacidad').value = kb.capacidad;
+    document.getElementById('kb-incluye').value = kb.incluye;
+    document.getElementById('kb-mascotas').value = kb.mascotas;
+    document.getElementById('kb-ubicacion').value = kb.ubicacion;
+    document.getElementById('kb-telefono').value = kb.telefono;
+  }
+  card.style.display = open ? 'none' : '';
+});
+document.getElementById('kb-save').addEventListener('click', ()=>{
+  kb = {
+    nombre: document.getElementById('kb-nombre').value.trim(),
+    propietario: document.getElementById('kb-propietario').value.trim(),
+    doc: document.getElementById('kb-doc').value.trim(),
+    precio: document.getElementById('kb-precio').value.trim(),
+    capacidad: document.getElementById('kb-capacidad').value.trim(),
+    incluye: document.getElementById('kb-incluye').value.trim(),
+    mascotas: document.getElementById('kb-mascotas').value.trim(),
+    ubicacion: document.getElementById('kb-ubicacion').value.trim(),
+    telefono: document.getElementById('kb-telefono').value.trim()
+  };
+  save(LS_KB, kb);
+  document.getElementById('kb-card').style.display='none';
+  addBotMsg('Listo, actualicé la información de la finca. Pregúntame lo que quieras.');
+});
+
+function addMsg(role, html){
+  chatLog.push({role, html, t:Date.now()});
+  save(LS_CHAT, chatLog);
+  paintChat();
+}
+function addBotMsg(html){ addMsg('bot', html); }
+function addUserMsg(text){ addMsg('user', text.replace(/</g,'&lt;')); }
+
+function nextFestivo(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const list = [...eventsForYear(today.getFullYear()), ...eventsForYear(today.getFullYear()+1)]
+    .filter(e=>e.tipo==='festivo' && e.date>=today)
+    .sort((a,b)=>a.date-b.date);
+  if(list.length===0) return null;
+  const f = list[0];
+  const puente = isPuenteMonday(f.date);
+  return `${f.name} — ${f.date.getDate()} de ${MESES[f.date.getMonth()]}${puente?' (puente de 3 días)':''}`;
+}
+
+function respuestaPara(qKey, textoLibre){
+  const faltaInfo = (v)=> v ? v : 'aún no he configurado ese dato — dale a "⚙️ Editar información de la finca" para completarlo.';
+  switch(qKey){
+    case 'precio': return `El precio es: ${faltaInfo(kb.precio)}`;
+    case 'incluye': return `La finca incluye: ${faltaInfo(kb.incluye)}`;
+    case 'capacidad': return `Capacidad: ${faltaInfo(kb.capacidad)}`;
+    case 'mascotas': return `Sobre mascotas: ${faltaInfo(kb.mascotas)}`;
+    case 'ubicacion': return `Ubicación: ${faltaInfo(kb.ubicacion)}`;
+    case 'contacto': return kb.telefono ? `Puedes escribir directamente al ${kb.telefono}.` : faltaInfo(kb.telefono);
+    case 'festivo': { const f=nextFestivo(); return f ? `El próximo festivo es: ${f}. ¡Buena fecha para reservar con tiempo!` : 'No encontré el próximo festivo.'; }
+    case 'disponibilidad': return null; // se maneja aparte con el mini-formulario
+    default: return null;
+  }
+}
+
+function detectarIntencion(text){
+  const t = norm(text);
+  if(/(disponib|libre|ocupad|hay\s+fecha)/.test(t)) return 'disponibilidad';
+  if(/(precio|costo|vale|cuanto|tarifa)/.test(t)) return 'precio';
+  if(/(incluye|servicio|amenidad|tiene la finca|que tiene)/.test(t)) return 'incluye';
+  if(/(capacidad|cuantas personas|cupo|habitacion)/.test(t)) return 'capacidad';
+  if(/(mascota|perro|gato|animal)/.test(t)) return 'mascotas';
+  if(/(ubicacion|donde queda|direccion|como llegar)/.test(t)) return 'ubicacion';
+  if(/(festivo|puente|fin de semana especial|feriado)/.test(t)) return 'festivo';
+  if(/(contacto|telefono|whatsapp|celular|llamar)/.test(t)) return 'contacto';
+  return null;
+}
+
+function avisoFormularioDisponibilidad(){
+  const uid = 'q'+Date.now();
+  addBotMsg(`Cuéntame las fechas que te interesan:
+    <div class="avail-inline">
+      <div class="field"><label>Entrada</label><input type="date" class="avail-ci" data-uid="${uid}"></div>
+      <div class="field"><label>Salida</label><input type="date" class="avail-co" data-uid="${uid}"></div>
+      <button class="btn small avail-btn" type="button" data-uid="${uid}">Consultar</button>
+    </div>`);
+}
+document.getElementById('chat-log').addEventListener('click', e=>{
+  const btn = e.target.closest('.avail-btn');
+  if(!btn) return;
+  const uid = btn.dataset.uid;
+  const ciEl = document.querySelector(`.avail-ci[data-uid="${uid}"]`);
+  const coEl = document.querySelector(`.avail-co[data-uid="${uid}"]`);
+  const ci = ciEl ? ciEl.value : '';
+  const co = coEl ? coEl.value : '';
+  if(!ci || !co){ addBotMsg('Necesito las dos fechas para revisar.'); return; }
+  const ciD = parseYMD(ci), coD = parseYMD(co);
+  if(coD<=ciD){ addBotMsg('La fecha de salida debe ser después de la de entrada.'); return; }
+  const choque = reservas.find(r=>{ const rci=parseYMD(r.checkin), rco=parseYMD(r.checkout); return ciD<rco && coD>rci; });
+  if(choque){
+    addBotMsg(`Para el ${fmtDateHuman(ci)} → ${fmtDateHuman(co)} ya hay una reserva (${choque.cliente}). No está disponible ese rango completo.`);
+  } else {
+    addBotMsg(`¡Buenas noticias! El rango del ${fmtDateHuman(ci)} al ${fmtDateHuman(co)} está disponible.${kb.precio?(' Precio: '+kb.precio):''}`);
+  }
+});
+
+function responderMensaje(text){
+  addUserMsg(text);
+  const intent = detectarIntencion(text);
+  if(intent==='disponibilidad'){ avisoFormularioDisponibilidad(); return; }
+  const resp = intent ? respuestaPara(intent) : null;
+  if(resp){ addBotMsg(resp); return; }
+  addBotMsg(`No estoy seguro de esa pregunta. Puedo ayudarte con: precio, qué incluye, capacidad, mascotas, ubicación, disponibilidad de fechas o el próximo festivo. También puedes usar los botones de arriba.`);
+}
+
+document.getElementById('chat-form').addEventListener('submit', e=>{
+  e.preventDefault();
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value='';
+  responderMensaje(text);
+});
+document.querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    const key = chip.dataset.q;
+    const label = chip.textContent.trim();
+    addUserMsg(label);
+    if(key==='disponibilidad'){ avisoFormularioDisponibilidad(); return; }
+    const resp = respuestaPara(key);
+    addBotMsg(resp || 'No tengo esa información todavía.');
+  });
+});
+
+function paintChat(){
+  const log = document.getElementById('chat-log');
+  log.innerHTML = chatLog.map(m=>`<div class="msg ${m.role}">${m.html}</div>`).join('');
+  log.scrollTop = log.scrollHeight;
+}
+function renderChat(){
+  if(chatLog.length===0){
+    addBotMsg('¡Hola! Soy el asistente de la finca. Pregúntame por precio, disponibilidad, qué incluye, mascotas, ubicación o el próximo festivo.');
+  } else {
+    paintChat();
+  }
+}
+
+/* ---------- Init ---------- */
+(function init(){
+  document.getElementById('g-filtro').value = ymd(new Date()).slice(0,7);
+  showTab('reservas');
+})();
+</script>
+</body>
+</html>
