@@ -1,3 +1,4 @@
+code .code .
 $ whoami   ¿quien soy aqui? ec2 user
 $ hostmane   ¿como se llama este servidor?
 $ pwd      ¿en que carpeta estoy?
